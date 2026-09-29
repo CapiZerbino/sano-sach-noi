@@ -57,6 +57,21 @@ In danh sách: `PYTHONPATH=scripts/tts "$PY" scripts/tts/audio_gen_batch.py --li
 
 `--voice` nhận đúng tên (có dấu), bí danh upstream, hoặc một phần tên không phân biệt hoa thường. Không thấy giọng → báo lỗi kèm danh sách, không tự đổi giọng khác.
 
+### Giọng riêng (nhân bản từ clip mẫu)
+
+Chỉ nhân bản giọng của chính bạn hoặc của người đã đồng ý. Clip mẫu: một người nói, ít tiếng nền, **đầu clip là lời nói liền mạch** (tự khử nhiễu).
+
+- **Đoạn mẫu** = `--ref-seconds` giây đầu clip (3–16, mặc định 8). Đo trên giọng thật: 16 giây giống giọng hơn 8 giây một chút (độ giống trung bình 0,872 so với 0,857), 20 giây lại kém đi và đọc nhanh bất thường nên bị chặn ở 16.
+- **Hồ sơ giọng**: clip dài hơn đoạn mẫu 8 giây trở lên thì lấy trung bình trên các khúc 8 giây của cả clip (vài phút giọng nói cho hồ sơ ổn định hơn).
+
+```bash
+PYTHONPATH=scripts/tts "$PY" scripts/tts/audio_gen_batch.py --add-voice "Giọng của tôi" --clip mau.wav --ref-seconds 16
+PYTHONPATH=scripts/tts "$PY" scripts/tts/audio_gen_batch.py --voice "Giọng của tôi" chuong1.txt
+PYTHONPATH=scripts/tts "$PY" scripts/tts/audio_gen_batch.py --remove-voice "Giọng của tôi"
+```
+
+Hồ sơ giọng lưu ở `<thư mục dữ liệu Sano>/giong-rieng/voices_v3_turbo.json` (`scripts/tts/custom_voices.py`), không mất khi gỡ / cài lại bộ đọc. Giọng riêng hiện trong `--list-voices` nên phần mềm desktop và `sano-docx2tts --voice` dùng được như giọng dựng sẵn. Nhân bản cần thêm `speaker_encoder.onnx` (~28 MB, đã ghim trong `versions.env`).
+
 ## Script
 
 `scripts/tts/audio_gen.py` (1 file) và `scripts/tts/audio_gen_batch.py` (nhiều file, nạp model 1 lần — `sano-docx2tts` gọi script này). Mỗi file đưa **nguyên văn bản** vào `tts.infer(text, voice=...)`: v3 Turbo tự chia câu, tự chống lỗi "nói thêm" và tự nghỉ theo ranh giới (đoạn 0,70s > câu 0,50s > trong câu 0,30s) — xem [`docs/vieneu-tts-patch.md`](vieneu-tts-patch.md).

@@ -10,6 +10,8 @@ Usage (chạy bằng python của venv VieNeu-TTS v3, PYTHONPATH chứa thư m�
     python audio_gen_batch.py chuong1.txt chuong2.txt chuong3.txt
     python audio_gen_batch.py --voice "Hải Đăng" chuong*.txt
     python audio_gen_batch.py --list-voices
+    python audio_gen_batch.py --add-voice "Giọng của tôi" --clip mau.wav [--ref-seconds 16]   # nhân bản giọng
+    python audio_gen_batch.py --remove-voice "Giọng của tôi"
 """
 
 import argparse
@@ -17,6 +19,7 @@ import time
 from pathlib import Path
 
 # Import helper từ audio_gen.py (cũng cấu hình stdout UTF-8)
+import custom_voices
 from audio_gen import DEFAULT_VOICE, load_tts, pick_voice, print_voices, synth_file
 
 
@@ -45,13 +48,26 @@ def process_file(tts, voice, input_file: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Đọc giọng nhiều file văn bản bằng VieNeu-TTS v3 Turbo")
     parser.add_argument("files", nargs='*', help="Các file txt input")
-    parser.add_argument("--voice", default=DEFAULT_VOICE, help=f'Tên giọng preset (mặc định: "{DEFAULT_VOICE}")')
+    parser.add_argument("--voice", default=DEFAULT_VOICE, help=f'Tên giọng dựng sẵn hoặc giọng riêng (mặc định: "{DEFAULT_VOICE}")')
     parser.add_argument("--list-voices", action="store_true", help="In danh sách giọng rồi thoát")
+    parser.add_argument("--add-voice", metavar="TÊN", help="Nhân bản giọng từ --clip, lưu dưới tên này rồi thoát")
+    parser.add_argument("--clip", help="Clip mẫu cho --add-voice (một người nói, ít tiếng nền; đầu clip là lời nói liền mạch)")
+    parser.add_argument("--ref-seconds", type=float, default=8.0,
+                        help="Số giây đầu clip làm đoạn mẫu, 3–16 (mặc định 8; 16 giống giọng hơn một chút)")
+    parser.add_argument("--remove-voice", metavar="TÊN", help="Xoá giọng riêng đã lưu rồi thoát")
     args = parser.parse_args()
+    if args.remove_voice:
+        custom_voices.remove(args.remove_voice)
+        return
+    if args.add_voice and not args.clip:
+        parser.error("--add-voice cần --clip")
 
     print(f"🎤 Loading VieNeu v3 Turbo (1 lần duy nhất)...")
     load_start = time.time()
     tts = load_tts()
+    if args.add_voice:
+        custom_voices.add(tts, args.add_voice, args.clip, ref_seconds=args.ref_seconds)
+        return
     if args.list_voices:
         print_voices(tts)
         return

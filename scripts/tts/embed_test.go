@@ -72,7 +72,7 @@ func TestModelsSHA256_KhopVersions(t *testing.T) {
 
 func TestNames_CoScriptChinh(t *testing.T) {
 	names := strings.Join(Names(), ",")
-	for _, n := range []string{"audio_gen.py", "audio_gen_batch.py", "models.py", "models.sha256", "versions.env"} {
+	for _, n := range []string{"audio_gen.py", "audio_gen_batch.py", "custom_voices.py", "models.py", "models.sha256", "versions.env"} {
 		if !strings.Contains(names, n) {
 			t.Errorf("thiếu %s trong bản nhúng (%s)", n, names)
 		}

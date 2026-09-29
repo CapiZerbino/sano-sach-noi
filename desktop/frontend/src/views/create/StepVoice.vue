@@ -13,7 +13,9 @@ const REGIONS = ['Bắc', 'Trung', 'Nam']
 const REC = 'rec'
 /** Giọng khuyên dùng: trong, không rè; ba cuốn sách mẫu đọc bằng ba giọng này. */
 const RECOMMENDED = ['Hải Đăng', 'Thiện Minh', 'Mỹ Duyên']
-const isRec = (v: Voice) => RECOMMENDED.includes(v.name)
+/** Giọng riêng nhân bản từ clip mẫu (scripts/tts/custom_voices.py) — mô tả bắt đầu bằng "Giọng riêng". */
+const isCustom = (v: Voice) => v.desc.startsWith('Giọng riêng')
+const isRec = (v: Voice) => isCustom(v) || RECOMMENDED.includes(v.name)
 
 const player = useClipPlayer()
 const loadingVoice = ref<string | null>(null)
@@ -68,8 +70,9 @@ const recCount = () => regionCount(REC)
 const regionTabs = computed(() => [...(recCount() ? [REC] : []), ...REGIONS.filter((r) => regionCount(r) > 0), 'all'])
 const tabLabel = (r: string) => (r === REC ? 'Khuyên dùng' : r === 'all' ? 'Tất cả' : `Miền ${r}`)
 
-// Giọng khuyên dùng lên đầu (theo thứ tự RECOMMENDED), rồi giọng bộ đọc đánh dấu nổi bật.
-const rank = (v: Voice) => (isRec(v) ? RECOMMENDED.indexOf(v.name) : RECOMMENDED.length + (v.featured ? 0 : 1))
+// Giọng riêng lên đầu, rồi giọng khuyên dùng (theo thứ tự RECOMMENDED), rồi giọng bộ đọc đánh dấu nổi bật.
+const rank = (v: Voice) =>
+  isCustom(v) ? -1 : isRec(v) ? RECOMMENDED.indexOf(v.name) : RECOMMENDED.length + (v.featured ? 0 : 1)
 const visible = computed(() => {
   const v = state.voices.filter((x) => inTab(x, region.value) && (!gender.value || parts(x).gender === gender.value))
   v.sort((a, b) => rank(a) - rank(b))

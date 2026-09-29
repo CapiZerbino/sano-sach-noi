@@ -33,6 +33,7 @@ for _stream in (sys.stdout, sys.stderr):
     except (AttributeError, ValueError):
         pass
 
+import custom_voices
 import models
 
 DEFAULT_VOICE = "Hải Đăng"
@@ -111,11 +112,13 @@ def install_phoneme_overrides():
 
 
 def load_tts():
-    """Nạp VieNeu v3 Turbo với model ghim revision, không cần mạng sau lần tải đầu."""
+    """Nạp VieNeu v3 Turbo với model ghim revision (không cần mạng sau lần tải đầu)
+    kèm các giọng riêng đã lưu."""
     models.activate_offline()
     from vieneu import Vieneu
     tts = Vieneu(mode="v3turbo")
     install_phoneme_overrides()
+    custom_voices.load_into(tts)  # giọng riêng nhân bản từ clip mẫu, gọi theo tên như giọng dựng sẵn
     return tts
 
 
