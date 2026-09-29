@@ -5,13 +5,13 @@
 <p align="center">Biến tài liệu của chính bạn thành sách nói. Giọng đọc AI tiếng Việt chạy ngay trên máy tính.<br>Miễn phí · Mã nguồn mở · Không cần API key · Windows, macOS, Linux</p>
 
 <p align="center">
-  <a href="https://github.com/tanviet12/sano-sach-noi/releases/latest"><img src="https://img.shields.io/github/v/release/tanviet12/sano-sach-noi?label=b%E1%BA%A3n%20m%E1%BB%9Bi%20nh%E1%BA%A5t&color=c60505" alt="Bản mới nhất"></a>
+  <a href="https://github.com/CapiZerbino/sano-sach-noi/releases/latest"><img src="https://img.shields.io/github/v/release/CapiZerbino/sano-sach-noi?label=b%E1%BA%A3n%20m%E1%BB%9Bi%20nh%E1%BA%A5t&color=c60505" alt="Bản mới nhất"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/gi%E1%BA%A5y%20ph%C3%A9p-MIT-blue" alt="Giấy phép MIT"></a>
   <a href="https://github.com/tanviet12/vbsec"><img src="https://img.shields.io/badge/vbsec-%C4%91%C3%A3%20qu%C3%A9t%20b%E1%BA%A3o%20m%E1%BA%ADt%20%C2%B7%20%C4%91%E1%BA%A1t-2ea44f" alt="vbsec: đã quét bảo mật, đạt"></a>
 </p>
 
 <p align="center">
-  <b><a href="https://github.com/tanviet12/sano-sach-noi/releases/latest">Tải Sano</a></b> ·
+  <b><a href="https://github.com/CapiZerbino/sano-sach-noi/releases/latest">Tải Sano</a></b> ·
   <b><a href="https://sanobook.com/demo">Nghe thử</a></b> ·
   <b><a href="https://sanobook.com/">Trang chủ</a></b> ·
   <b><a href="https://sanobook.com/cai-dat">Hướng dẫn</a></b>
@@ -21,6 +21,8 @@
   <a href="https://sanobook.com/video/sano-gioi-thieu.mp4"><img src="docs/images/readme/sano-demo.gif" alt="Sano: nạp file Word, nghe thử và sửa lời đọc, tạo sách, nghe trên máy hoặc điện thoại" width="860"></a><br>
   <sub>Bấm vào ảnh để xem video 40 giây có tiếng (giọng Hải Đăng)</sub>
 </p>
+
+> Bản fork của [tanviet12/sano-sach-noi](https://github.com/tanviet12/sano-sach-noi), thêm **giọng riêng nhân bản từ clip mẫu** và **nhạc nền**. Tự cập nhật lấy bản mới từ fork này.
 
 ## Sano làm được gì
 
@@ -96,11 +98,11 @@ Một file M4B có mục lục chương, tên sách, bìa, khoảng 29 MB cho m�
 
 | Máy | Tải | Ghi chú |
 |---|---|---|
-| **Windows** 10/11 | [Bộ cài .exe](https://github.com/tanviet12/sano-sach-noi/releases/download/v0.1.20/Sano-0.1.20-windows-amd64-setup.exe) · [Bản portable .zip](https://github.com/tanviet12/sano-sach-noi/releases/download/v0.1.20/Sano-0.1.20-windows-amd64-portable.zip) | không cần quyền admin |
-| **macOS** 14+ (Intel: 13+) | [Sano .dmg](https://github.com/tanviet12/sano-sach-noi/releases/download/v0.1.20/Sano-0.1.20-macos-universal.dmg) | Apple Silicon và Intel |
-| **Linux** x86_64 | [Sano .AppImage](https://github.com/tanviet12/sano-sach-noi/releases/download/v0.1.20/Sano-0.1.20-linux-amd64.AppImage) | cần WebKitGTK 4.1 |
+| **Windows** 10/11 | [Bộ cài .exe](https://github.com/CapiZerbino/sano-sach-noi/releases/download/v0.2.0/Sano-0.2.0-windows-amd64-setup.exe) · [Bản portable .zip](https://github.com/CapiZerbino/sano-sach-noi/releases/download/v0.2.0/Sano-0.2.0-windows-amd64-portable.zip) | không cần quyền admin |
+| **macOS** 14+ (Intel: 13+) | [Sano .dmg](https://github.com/CapiZerbino/sano-sach-noi/releases/download/v0.2.0/Sano-0.2.0-macos-universal.dmg) | Apple Silicon và Intel |
+| **Linux** x86_64 | [Sano .AppImage](https://github.com/CapiZerbino/sano-sach-noi/releases/download/v0.2.0/Sano-0.2.0-linux-amd64.AppImage) | cần WebKitGTK 4.1 |
 
-Lần mở đầu, Sano tự tải bộ đọc giọng Việt về máy (khoảng 1 GB, chỉ một lần). App chưa ký số nên lần đầu mở: macOS → Cài đặt hệ thống → Quyền riêng tư & Bảo mật → **Vẫn mở**; Windows → **Thông tin thêm** → **Vẫn chạy** ([chi tiết](https://sanobook.com/mo-app-lan-dau)). Kiểm file bằng `SHA256SUMS` trong [bản phát hành](https://github.com/tanviet12/sano-sach-noi/releases/latest); mọi bản cài build trên GitHub Actions từ thẻ phiên bản. Tất cả phiên bản: [Releases](https://github.com/tanviet12/sano-sach-noi/releases).
+Lần mở đầu, Sano tự tải bộ đọc giọng Việt về máy (khoảng 1 GB, chỉ một lần). App chưa ký số nên lần đầu mở: macOS → Cài đặt hệ thống → Quyền riêng tư & Bảo mật → **Vẫn mở**; Windows → **Thông tin thêm** → **Vẫn chạy** ([chi tiết](https://sanobook.com/mo-app-lan-dau)). Kiểm file bằng `SHA256SUMS` trong [bản phát hành](https://github.com/CapiZerbino/sano-sach-noi/releases/latest); mọi bản cài build trên GitHub Actions từ thẻ phiên bản. Tất cả phiên bản: [Releases](https://github.com/CapiZerbino/sano-sach-noi/releases).
 
 > Repo không kèm sách nào ngoài 5 cuốn mẫu tự viết. Xem [Bản quyền và trách nhiệm](#bản-quyền-và-trách-nhiệm) trước khi dùng.
 

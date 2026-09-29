@@ -18,8 +18,8 @@ import (
 // (selfupdate.go, kiểm SHA256 + chữ ký ed25519); cách cài không tự thay được
 // (chạy từ .dmg, thư mục không ghi được...) thì mở trang tải như trước.
 const (
-	releasesPage      = "https://github.com/tanviet12/sano-sach-noi/releases"
-	latestReleaseAPI  = "https://api.github.com/repos/tanviet12/sano-sach-noi/releases/latest"
+	releasesPage      = "https://github.com/CapiZerbino/sano-sach-noi/releases"
+	latestReleaseAPI  = "https://api.github.com/repos/CapiZerbino/sano-sach-noi/releases/latest"
 	updateTimeout     = 10 * time.Second
 	maxReleaseBytes   = 1 << 20
 	maxReleaseNotes   = 8   // số dòng "có gì mới" hiện trong hộp thoại
@@ -32,7 +32,7 @@ type UpdateInfo struct {
 	Version   string   `json:"version"`   // "0.2.0" (không có "v")
 	Published string   `json:"published"` // RFC3339, rỗng nếu không rõ
 	Notes     []string `json:"notes"`     // các dòng gạch đầu dòng trong ghi chú phát hành
-	URL       string   `json:"url"`       // trang tải bản đó (luôn trên github.com/tanviet12/sano-sach-noi)
+	URL       string   `json:"url"`       // trang tải bản đó (luôn trên github.com/CapiZerbino/sano-sach-noi)
 	// Tự cập nhật: AutoUpdate = tải + thay được ngay trong app; không được thì
 	// Manual nói lý do (giao diện hiện nút "Mở trang tải"). Size = dung lượng
 	// file cài sẽ tải (byte, 0 nếu không rõ).

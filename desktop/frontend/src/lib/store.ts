@@ -708,7 +708,7 @@ export function setAutoUpdateCheck(on: boolean) {
 function devUpdateInfo(): UpdateInfo {
   return {
     available: true, version: '0.2.0', published: '', notes: ['Ghi chú phát hành mẫu (chỉ khi chạy dev)'],
-    url: 'https://github.com/tanviet12/sano-sach-noi/releases', autoUpdate: q.get('manual') !== '1',
+    url: 'https://github.com/CapiZerbino/sano-sach-noi/releases', autoUpdate: q.get('manual') !== '1',
     manual: q.get('manual') === '1' ? 'Sano đang chạy thẳng từ file .dmg — kéo Sano vào thư mục Applications rồi mở lại để tự cập nhật được' : '',
     size: 18 << 20,
   }
