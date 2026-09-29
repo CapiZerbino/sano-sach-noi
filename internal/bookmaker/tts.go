@@ -49,6 +49,11 @@ type TTSConfig struct {
 	// ngắn hơn lời gốc; chapters.json vẫn giữ reading_script đầy đủ.
 	PreviewChars int
 
+	// Music — nhạc nền trộn vào mỗi tiểu mục đọc giọng thật (xem BackgroundMusic);
+	// nil = không nhạc, MP3 giữ nguyên như trước. Tiểu mục stub im lặng không trộn.
+	Music     *BackgroundMusic
+	musicNorm string // nhạc đã chuẩn hoá cho lượt render hiện tại (normalizedMusic)
+
 	Logf func(string, ...any)
 }
 
@@ -62,6 +67,14 @@ type ttsJob struct {
 func (c *TTSConfig) preflight() error {
 	if _, err := exec.LookPath(c.FFmpeg); err != nil {
 		return fmt.Errorf("không tìm thấy ffmpeg %q (cần convert WAV→MP3): %w", c.FFmpeg, err)
+	}
+	if c.Music != nil {
+		if err := c.Music.Validate(); err != nil {
+			return err
+		}
+		if err := ProbeMusic(c.FFmpeg, c.Music.Path); err != nil {
+			return err
+		}
 	}
 	if c.Mode == TTSModeStub {
 		return nil
@@ -92,6 +105,7 @@ func (c *TTSConfig) RenderContext(ctx context.Context, workDir string, jobs []tt
 	if c.Logf == nil {
 		c.Logf = func(string, ...any) {}
 	}
+	defer c.releaseMusic()
 	if c.Mode == TTSModeStub {
 		return c.renderStub(ctx, workDir, jobs, onDone)
 	}
@@ -201,7 +215,7 @@ func (c *TTSConfig) renderVieNeu(ctx context.Context, workDir string, jobs []tts
 		if m == nil || !pending[m[1]] || convErr != nil {
 			continue
 		}
-		if convErr = c.finishWav(workDir, m[1]); convErr == nil {
+		if convErr = c.finishWav(ctx, workDir, m[1]); convErr == nil {
 			delete(pending, m[1])
 			onDone(m[1])
 		}
@@ -221,7 +235,7 @@ func (c *TTSConfig) renderVieNeu(ctx context.Context, workDir string, jobs []tts
 		if !pending[j.Stem] {
 			continue
 		}
-		if err := c.finishWav(workDir, j.Stem); err != nil {
+		if err := c.finishWav(ctx, workDir, j.Stem); err != nil {
 			return err
 		}
 		onDone(j.Stem)
@@ -230,13 +244,13 @@ func (c *TTSConfig) renderVieNeu(ctx context.Context, workDir string, jobs []tts
 }
 
 // finishWav convert <stem>_full.wav → <stem>.mp3 rồi dọn file trung gian.
-func (c *TTSConfig) finishWav(workDir, stem string) error {
+func (c *TTSConfig) finishWav(ctx context.Context, workDir, stem string) error {
 	wav := filepath.Join(workDir, stem+"_full.wav")
 	if !fileExistsTTS(wav) {
 		return fmt.Errorf("không thấy WAV đầu ra %q (TTS lỗi cho tiểu mục %q)", wav, stem)
 	}
 	mp3 := filepath.Join(workDir, stem+".mp3")
-	if err := c.convertToMP3(wav, mp3); err != nil {
+	if err := c.convertToMP3(ctx, wav, mp3); err != nil {
 		return err
 	}
 	// Dọn file trung gian (wav + chunks). File <stem>.txt giữ lại nếu KeepTxt
@@ -291,13 +305,24 @@ func (c *TTSConfig) renderStub(ctx context.Context, workDir string, jobs []ttsJo
 
 // convertToMP3 chuyển WAV → MP3 CBR mono qua ffmpeg (đếm frame được bằng
 // tcolgate/mp3 để tính thời lượng).
-func (c *TTSConfig) convertToMP3(wav, mp3 string) error {
+func (c *TTSConfig) convertToMP3(ctx context.Context, wav, mp3 string) error {
 	args := []string{
 		"-y", "-i", wav,
 		"-codec:a", "libmp3lame", "-b:a", c.Bitrate, "-ar", "44100", "-ac", "1",
 		mp3,
 	}
-	cmd := exec.Command(c.FFmpeg, args...)
+	if c.Music != nil {
+		music, err := c.normalizedMusic(ctx)
+		if err != nil {
+			return err
+		}
+		dur, err := wavDurationSec(wav)
+		if err != nil { // không đọc được header → vẫn trộn, chỉ bỏ fade ra
+			c.Logf("  ⚠ %s: không đọc được thời lượng WAV (%v), bỏ fade ra nhạc nền", filepath.Base(wav), err)
+		}
+		args = musicMixArgs(wav, mp3, music, c.Music.Volume, dur, c.Bitrate)
+	}
+	cmd := exec.CommandContext(ctx, c.FFmpeg, args...)
 	hideWindow(cmd)
 	if out, err := cmd.CombinedOutput(); err != nil {
 		return fmt.Errorf("convert %q → MP3: %w\n%s", wav, err, truncateBytes(out, 800))

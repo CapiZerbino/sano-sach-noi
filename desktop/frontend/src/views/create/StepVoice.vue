@@ -5,6 +5,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { Loader2, Pause, Play } from 'lucide-vue-next'
 import { errText, speakSample, type Voice } from '../../lib/backend'
 import { useClipPlayer } from '../../lib/audio'
+import MusicPicker from '../../components/MusicPicker.vue'
 import { lastVoice, loadVoices, state } from '../../lib/store'
 
 // Đổi tên khoá (từ 0.1.10) để máy đã chọn miền trước đây cũng mở tab Khuyên dùng một lần.
@@ -149,5 +150,6 @@ async function sample(v: Voice) {
       <p class="font-medium">Câu nghe mẫu</p>
       <input v-model="state.sampleSentence" class="mt-1 w-full h-9 rounded-md border border-input bg-background px-3" />
     </div>
+    <MusicPicker />
   </div>
 </template>

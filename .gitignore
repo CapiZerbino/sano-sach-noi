@@ -25,6 +25,8 @@ tham-khao/
 !desktop/mau/sach-mau/**/*.mp3
 # Nghe mẫu 3 cấp ở bước Cách đọc (desktop/frontend/src/views/create/StepLevel.vue) — phải commit
 !desktop/frontend/src/assets/levels/*.mp3
+# Nhạc nền kèm sẵn (nhúng vào app, xem internal/bgmusic) — ngoại lệ của luật *.mp3
+!internal/bgmusic/tracks/*.mp3
 
 # Gói sách nói đã đóng (book-<slug>.zip) — output của cmd/sano-docx2tts, không commit git
 dong-goi-sach/

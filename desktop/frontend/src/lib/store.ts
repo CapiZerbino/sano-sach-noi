@@ -80,6 +80,10 @@ export function saveAITool(t: AITool) {
 /** Mã lời mở đầu khi nghe thử (khớp bookmaker.IntroStem). */
 export const INTRO_STEM = 'intro'
 const DEFAULT_VOICE = 'Hải Đăng'
+/** Mức nhạc nền — khớp bookmaker.Min/Max/DefaultMusicVolume (0.20 ≈ nhạc nhỏ hơn giọng ~23 dB). */
+export const MIN_MUSIC_VOLUME = 0.05
+export const MAX_MUSIC_VOLUME = 0.4
+export const DEFAULT_MUSIC_VOLUME = 0.2
 const LAST_VOICE_KEY = 'sano.lastVoice'
 
 /** Giọng của cuốn tạo gần nhất (tiện ích riêng của máy, mất thì về giọng mặc định). */
@@ -158,6 +162,12 @@ export const state = reactive({
   voicesError: '',
   voice: lastVoice() || DEFAULT_VOICE,
   sampleSentence: '',
+  // Nhạc nền (bước Chọn giọng): '' = không nhạc, 'file' = file riêng (musicPath), còn lại = id bài kèm sẵn.
+  // Đổi qua lại vẫn nhớ file riêng đã chọn.
+  musicChoice: '',
+  musicPath: '',
+  musicName: '',
+  musicVolume: DEFAULT_MUSIC_VOLUME,
 
   // B5 Lời mở đầu
   introEnabled: true,
@@ -274,13 +284,18 @@ export function settings(): BookSettings {
     readingEdits: { ...state.edits },
     rightsConfirmedAt: state.rightsConfirmedAt,
     pronunciations: { ...state.bookDict },
+    music: {
+      track: state.musicChoice === 'file' ? '' : state.musicChoice,
+      path: state.musicChoice === 'file' ? state.musicPath : '',
+      volume: state.musicVolume,
+    },
   }
 }
 
 /** Lựa chọn ảnh hưởng tới lời đọc / giọng (không tính lời đã sửa ở B5). */
 function previewKey() {
   const s = settings()
-  return JSON.stringify([s.path, s.title, s.author, s.voice, s.introText, s.keepHeadingNumbers, s.dropStems, s.pronunciations])
+  return JSON.stringify([s.path, s.title, s.author, s.voice, s.introText, s.keepHeadingNumbers, s.dropStems, s.pronunciations, s.music])
 }
 
 /** Đủ điều kiện render cả cuốn: đã xác nhận quyền dùng tài liệu (nghe thử không bắt buộc). */

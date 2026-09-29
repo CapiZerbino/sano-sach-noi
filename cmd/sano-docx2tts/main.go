@@ -30,6 +30,7 @@ import (
 	"strings"
 	"time"
 
+	"sano/internal/bgmusic"
 	"sano/internal/bookmaker"
 	"sano/internal/m4b"
 )
@@ -59,6 +60,8 @@ func main() {
 		ffmpegBin  = flag.String("ffmpeg", "ffmpeg", "binary ffmpeg")
 		bitrate    = flag.String("bitrate", "128k", "bitrate MP3 CBR")
 		stubSec    = flag.Int("stub-sec", 2, "độ dài MP3 stub (giây), chỉ dùng --tts-mode stub")
+		music      = flag.String("music", "", "nhạc nền trộn vào từng tiểu mục (tự hạ khi có giọng đọc): đường dẫn file nhạc, hoặc ID bài kèm sẵn ("+strings.Join(musicTrackIDs(), ", ")+"); trống = không nhạc")
+		musicVol   = flag.Float64("music-volume", bookmaker.DefaultMusicVolume, fmt.Sprintf("mức nhạc nền %.2f–%.2f (%.2f ≈ nhạc nhỏ hơn giọng ~23 dB)", bookmaker.MinMusicVolume, bookmaker.MaxMusicVolume, bookmaker.DefaultMusicVolume))
 		pronFile   = flag.String("pronunciations", "", "file TSV bổ sung/ghi đè từ điển cách đọc viết tắt (mỗi dòng \"<viết tắt><TAB><cách đọc>\"; cách đọc trống = tắt mục mặc định)")
 		keepTxt    = flag.Bool("keep-txt", false, "giữ lại file <stem>.txt đã nạp cho TTS trong output-dir (soát lời đọc 1:1 với audio nếu có chỗ phát sai)")
 		outputZip  = flag.String("output-zip", "", "đóng gói thêm file zip chuẩn ở đường dẫn này (sao lưu / chuyển máy; xem docs/book-zip-format.md)")
@@ -166,6 +169,19 @@ func main() {
 		Logf:         logf,
 	}
 	tts.ScriptDir = filepath.Dir(tts.Script)
+	if *music != "" {
+		path := *music
+		if _, ok := bgmusic.Find(*music); ok { // ID bài kèm sẵn → giải nén ra thư mục tạm cho ffmpeg
+			cache, cerr := os.UserCacheDir() // thư mục riêng của người dùng (không dùng /tmp chung)
+			if cerr != nil {
+				log.Fatalf("nhạc nền: %v", cerr)
+			}
+			if path, err = bgmusic.Extract(*music, filepath.Join(cache, "sano", "nhac-nen")); err != nil {
+				log.Fatalf("nhạc nền: %v", err)
+			}
+		}
+		tts.Music = &bookmaker.BackgroundMusic{Path: path, Volume: *musicVol}
+	}
 
 	opts := bookmaker.Options{
 		InputDocx:       *input,
@@ -231,4 +247,13 @@ func exportM4B(dir, out, ffmpeg, bitrate string, gaps m4b.Gaps) error {
 	fmt.Printf("✔ M4B: %s (%d mốc chương, %s, %.1f MB)\n", res.Path, res.Chapters,
 		(time.Duration(res.DurationSec) * time.Second).String(), float64(res.Size)/(1<<20))
 	return nil
+}
+
+// musicTrackIDs — ID các bài nhạc nền kèm sẵn (cho --music).
+func musicTrackIDs() []string {
+	var ids []string
+	for _, t := range bgmusic.Tracks() {
+		ids = append(ids, t.ID)
+	}
+	return ids
 }

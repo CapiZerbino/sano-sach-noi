@@ -1,5 +1,10 @@
 # Changelog
 
+## Chưa phát hành
+
+### Tính năng
+- **Nhạc nền:** ở bước Chọn giọng, chọn *Không nhạc nền*, một trong 3 bản piano kèm sẵn (Satie, Chopin; bản thu Musopen, public domain) hoặc **file nhạc của bạn** (mp3, m4a, wav, flac, ogg…). Nhạc được chuẩn hoá độ lớn, **tự nhỏ xuống khi có giọng đọc**, fade vào / ra ở mỗi mục; thanh **Mức nhạc** 5–40% (mặc định 20%). Nghe thử, thư viện, M4B và gói zip đều có nhạc. Dòng lệnh: `--music`, `--music-volume`
+
 ## v0.1.20 (29/09/2026)
 
 ### Tính năng

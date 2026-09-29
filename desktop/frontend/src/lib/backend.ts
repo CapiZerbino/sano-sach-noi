@@ -2,7 +2,7 @@
 // thư mục wailsjs/ sinh tự động → frontend typecheck + build được cả khi máy
 // chưa cài Wails CLI. Mở bằng trình duyệt thường (vite dev) thì dùng dữ liệu giả
 // cho các màn xem được; phần cần máy thật (nghe thử, render) báo lỗi rõ.
-import { mockLibrary, mockOutline, mockVoices } from './mock'
+import { mockLibrary, mockMusicTracks, mockOutline, mockVoices } from './mock'
 
 export interface TTSStatus {
   ready: boolean
@@ -129,6 +129,30 @@ export interface BookSettings {
   coverPath: string
   readingEdits: Record<string, ReadingEdit>
   pronunciations: Record<string, string> // từ điển cách đọc riêng của cuốn (D12)
+  music: MusicChoice
+}
+
+/** Nhạc nền — khớp MusicChoice bên Go: track (bài kèm sẵn) ưu tiên hơn path; cả hai trống = không nhạc. */
+export interface MusicChoice {
+  track: string
+  path: string
+  volume: number // 0.05–0.40; 0 = mặc định
+}
+
+/** Bài nhạc nền kèm sẵn — khớp bgmusic.Track. */
+export interface MusicTrack {
+  id: string
+  title: string
+  composer: string
+  performer: string
+  seconds: number
+  license: string
+  source: string
+}
+
+export interface MusicFile {
+  path: string
+  name: string
 }
 
 export interface Clip {
@@ -419,6 +443,8 @@ interface GoApp {
   OpenBookVideoFolder(): Promise<void>
   BookVideoExtras(req: VideoExtrasRequest): Promise<VideoExtra[]>
   PickMusicFile(): Promise<string>
+  MusicTracks(): Promise<MusicTrack[]>
+  ChooseMusic(): Promise<MusicFile | null>
   CancelM4B(): Promise<void>
   M4BStatus(): Promise<M4BStatus | null>
   RevealM4B(): Promise<void>
@@ -817,6 +843,18 @@ export async function openLibraryFolder(): Promise<void> {
 
 export async function chooseCover(): Promise<CoverFile | null> {
   return need().ChooseCover()
+}
+
+/** Nhạc nền kèm sẵn (ngoài app thật: danh sách mẫu để xem giao diện). */
+export async function musicTracks(): Promise<MusicTrack[]> {
+  const app = goApp()
+  if (!app) return mockMusicTracks()
+  return app.MusicTracks()
+}
+
+/** Hộp chọn file nhạc nền. Huỷ → null. */
+export async function chooseMusic(): Promise<MusicFile | null> {
+  return need().ChooseMusic()
 }
 
 /**

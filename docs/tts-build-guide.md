@@ -166,6 +166,15 @@ output-dir/
 
 `reading_script` đã chuẩn hóa: số La Mã→chữ ("Chương I"→"Chương một"), viết tắt mở rộng (`vd.`→ví dụ, `TP.HCM`→Thành phố Hồ Chí Minh, `v.v.`→vân vân); **caption ảnh (style chứa "caption") bị loại — không đọc nhãn "Hình N — ..."**. `image_description` **KHÔNG** ghép vào lời đọc (giữ trong metadata). `original_text` giữ nguyên lời gốc (đã loại caption ảnh).
 
+### Nhạc nền
+
+```bash
+# ID bài kèm sẵn (satie-gymnopedie-1, chopin-nocturne-op9-no2, chopin-nocturne-op9-no3) hoặc đường dẫn file nhạc
+./bin/sano-docx2tts --input sach.docx --output-dir out --music chopin-nocturne-op9-no2 --music-volume 0.2
+```
+
+Mỗi tiểu mục phát lại bài nhạc từ đầu (lặp nếu cần), fade vào 2s / ra 3s. Nhạc chuẩn hoá về -14 LUFS rồi nhân `--music-volume` (0.05–0.40) và tự hạ khi có giọng (sidechain ducking): đo trên giọng thật, 0.05 ≈ nhỏ hơn giọng 35 dB, **0.20 ≈ 23 dB** (mặc định), 0.40 ≈ 17 dB. Tiểu mục stub im lặng không trộn nhạc. Bản nhạc kèm sẵn nằm ở `internal/bgmusic/` (nguồn, giấy phép: `desktop/licenses/THIRD-PARTY-NOTICES.md`).
+
 ### Xuất M4B (nghe trên điện thoại, trên xe)
 
 Một file `.m4b` cho cả cuốn: AAC mono 64 kbps (~29 MB mỗi giờ nghe), mốc mục lục theo từng tiểu mục (chương chỉ có một tiểu mục trùng tên thì lấy tên chương), thẻ tên sách / tác giả / thể loại Audiobook, bìa nhúng (bìa của sách, không có thì tự vẽ bìa vuông 1400×1400). Chỉ cần ffmpeg.

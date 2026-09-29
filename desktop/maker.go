@@ -55,6 +55,8 @@ type BookSettings struct {
 	Pronunciations map[string]string `json:"pronunciations"`
 	// RightsConfirmedAt — lúc người dùng tick "có quyền dùng tài liệu này" (RFC 3339); bắt buộc để render.
 	RightsConfirmedAt string `json:"rightsConfirmedAt"`
+	// Music — nhạc nền trộn vào sách (xem music.go); trống = không nhạc.
+	Music MusicChoice `json:"music"`
 }
 
 // Clip — đoạn nghe thử kèm URL phát trong app.
@@ -219,7 +221,7 @@ func (a *App) PreviewClips(s BookSettings, stems []string) ([]Clip, error) {
 	if err != nil {
 		return nil, err
 	}
-	opts, err := s.options(t, dir, a.globalDict())
+	opts, err := a.bookOptions(s, t, dir)
 	if err != nil {
 		return nil, err
 	}
@@ -314,7 +316,7 @@ func (a *App) StartRender(s BookSettings) (*RenderStatus, error) {
 		a.mu.Unlock()
 		return nil, err
 	}
-	opts, err := s.options(t, work, a.globalDict())
+	opts, err := a.bookOptions(s, t, work)
 	if err != nil {
 		a.mu.Unlock()
 		_ = os.RemoveAll(work)

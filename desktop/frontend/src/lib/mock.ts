@@ -1,7 +1,7 @@
 // Hằng số giao diện + dữ liệu giả chỉ dùng khi mở bằng trình duyệt thường
 // (npm run dev, không có phần Go). Trong app, mọi dữ liệu Tạo sách / Thư viện
 // đều đọc thật qua backend.ts.
-import type { LibraryInfo, Outline, Voice } from './backend'
+import type { LibraryInfo, MusicTrack, Outline, Voice } from './backend'
 
 export const DOCS = 'https://sanobook.com'
 export const REPO = 'https://github.com/tanviet12/sano-sach-noi'
@@ -35,6 +35,17 @@ export function mockOutline(): Outline {
     ],
     warnings: { images: 5, tables: 2, fakeHeadings: ['Ghi nhớ'], unknownAcronyms: [{ word: 'OKR', count: 3 }] },
   }
+}
+
+export function mockMusicTracks(): MusicTrack[] {
+  // Khớp internal/bgmusic (bản dev chạy trình duyệt không có phần Go)
+  const t = (id: string, title: string, composer: string, performer: string, seconds: number, license: string) =>
+    ({ id, title, composer, performer, seconds, license, source: '' })
+  return [
+    t('satie-gymnopedie-1', 'Gymnopédie số 1', 'Erik Satie', 'Robin Alciatore (Musopen)', 184, 'Public domain'),
+    t('chopin-nocturne-op9-no2', 'Nocturne Op. 9 số 2', 'Frédéric Chopin', 'Peter Johnston (Musopen)', 259, 'CC0 1.0'),
+    t('chopin-nocturne-op9-no3', 'Nocturne Op. 9 số 3', 'Frédéric Chopin', 'Xuan He (Musopen)', 418, 'Public domain'),
+  ]
 }
 
 export function mockVoices(): Voice[] {

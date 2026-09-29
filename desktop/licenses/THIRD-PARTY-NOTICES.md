@@ -45,6 +45,14 @@ Sano gọi ffmpeg như một chương trình riêng (chuyển WAV → MP3), khô
 - Windows: bản dựng gyan.dev 9.0.2 essentials — https://www.gyan.dev/ffmpeg/builds/ (GitHub Release `9.0.2` của https://github.com/GyanD/codexffmpeg)
 - Linux: bản dựng BtbN 9.0.1 GPL — https://github.com/BtbN/FFmpeg-Builds (release `autobuild-2026-08-31-13-27`)
 
+## Nhạc nền kèm sẵn
+
+Ba bản thu piano của Musopen (tổ chức phi lợi nhuận phát hành bản ghi âm vào public domain), lấy từ Wikimedia Commons. Cả tác phẩm lẫn bản ghi âm đều không còn bản quyền, dùng tự do không cần ghi công; Sano vẫn ghi nguồn để tiện đối chiếu. File gốc được chuyển sang MP3 mono 96 kbps (`internal/bgmusic/tracks/`).
+
+- Erik Satie — Gymnopédie số 1 · Robin Alciatore · Public domain — https://commons.wikimedia.org/wiki/File:Erik_Satie_-_gymnopedies_-_la_1_ere._lent_et_douloureux.ogg
+- Frédéric Chopin — Nocturne Op. 9 số 2 · Peter Johnston · CC0 1.0 — https://commons.wikimedia.org/wiki/File:Chopin_Nocturne_No._2_in_E_Flat_Major,_Op._9.ogg
+- Frédéric Chopin — Nocturne Op. 9 số 3 · Xuan He · Public domain — https://commons.wikimedia.org/wiki/File:Chopin_-_Nocturne_No._3_in_B_major,_Op._9_No._3_(Xuan_He).flac
+
 ## Phần mềm desktop
 
 - Wails v2 — MIT — https://github.com/wailsapp/wails
